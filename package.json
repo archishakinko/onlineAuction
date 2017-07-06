@@ -1,0 +1,42 @@
+{
+  "name": "auction",
+  "version": "0.0.1",
+  "dependencies": {
+    "autoprefixer": "^6.5.1",
+    "babel-core": "^6.18.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.5.0",
+    "bcryptjs": "^2.3.0",
+    "bluebird": "^3.4.7",
+    "body-parser": "^1.15.2",
+    "body-parser-xml": "^1.1.0",
+    "cookie-parser": "^1.4.3",
+    "cookie-session": "^2.0.0-alpha.2",
+    "easyxml": "^2.0.1",
+    "express": "^4.14.0",
+    "express-session": "^1.14.2",
+    "jsonwebtoken": "^7.3.0",
+    "material-ui": "^0.18.6",
+    "mysql": "^2.11.1",
+    "needle": "^1.6.0",
+    "nodemon": "^1.11.0",
+    "pg": "^6.2.3",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "react-hot-loader": "^3.0.0-beta.6",
+    "react-router": "^4.1.1",
+    "react-tap-event-plugin": "^2.0.1",
+    "sequelize": "^3.24.1",
+    "validator": "^7.2.0",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "enjines": {
+    "node": "7.8.0"
+  },
+  "scripts": {
+    "start": "nodemon --use_strict index.js",
+    "bundle": "webpack"
+  }
+}

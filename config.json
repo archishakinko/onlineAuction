@@ -1,0 +1,18 @@
+{
+  "mysql": {
+    "dialect":"mysql",
+    "host": "127.0.0.1",
+    "name": "auction",
+    "user": "root",
+    "password": "qwerty"
+  },
+  "postgres": {
+    "dialect":"postgres",
+    "host": "ec2-107-21-108-204.compute-1.amazonaws.com",
+    "name": "dcfq185ecaibfe",
+    "user": "sglvnmzbswdsje",
+    "port": "5432",
+    "password": "c51a661e71853eaf0b417bc894350739cb5f81cf15bfc907b70cebad21c6635d",
+    "dialectOptions": { "ssl": true }
+  }
+}
