@@ -5,7 +5,10 @@ const promise = require('bluebird');
 const bodyParser = require('body-parser');
 require('body-parser-xml')(bodyParser);
 const easyxml = require('easyxml');
-const session = require('express-session');  
+const session = require('express-session');
+
+const out = require('./utils/out');
+const auth = require('./utils/authcheck');  
 
 const saltRounds = 10;
 const dbcontext = require('./context/db')(Sequelize, (process.env.DEV!=null)?config.postgres:config.mysql);
@@ -24,8 +27,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.xml({xmlParseOptions:{explicitArray: false}}));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 
+app.use(out.typeOf);
+
 const authRoutes = require('./routes/auth');
+const apiRoutes = require('./routes/api');
 app.use('/auth', authRoutes);
+app.use('/api', auth.tokenVerify, apiRoutes);
 
  dbcontext.sequelize
     .sync()
