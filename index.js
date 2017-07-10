@@ -29,9 +29,13 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveU
 
 app.use(out.typeOf);
 
+const adminService = require('./servicies/adminService');
+const userService = require('./servicies/userService');
 const authRoutes = require('./routes/auth');
-const apiRoutes = require('./routes/api');
+const apiRoutes = require('./routes/api')(adminService, userService);
+
 app.use('/auth', authRoutes);
+app.use(auth.saveUserLocal);
 app.use('/api', auth.tokenVerify, apiRoutes);
 
  dbcontext.sequelize

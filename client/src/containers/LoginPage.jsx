@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import LoginForm from '../components/LoginForm.jsx';
+import Auth from '../modules/Auth';
 
 class LoginPage extends React.Component {
 
@@ -37,6 +38,9 @@ class LoginPage extends React.Component {
           errors: {}
         });
         console.log('The form is valid');
+        console.log(xhr.response);
+        Auth.authenticateUser(xhr.response.token);
+        this.context.router.replace('/');
       } else {
         const errors = xhr.response.errors ? xhr.response.errors : {};
         errors.summary = xhr.response.message;
@@ -69,5 +73,9 @@ class LoginPage extends React.Component {
     );
   }
 }
+
+LoginPage.contextTypes = {
+  router: PropTypes.object.isRequired
+};
 
 export default LoginPage;

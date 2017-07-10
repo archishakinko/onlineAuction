@@ -58,6 +58,7 @@ class SignUpPage extends React.Component {
           errors: {}
         });
         console.log('The form is valid');
+        this.context.router.replace('/login');
       } else {
         const errors = xhr.response.errors ? xhr.response.errors : {};
         errors.summary = xhr.response.message;

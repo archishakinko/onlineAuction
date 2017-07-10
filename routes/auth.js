@@ -29,9 +29,7 @@ router.post('/login', (req, res) => {
     });
   }
   auth.auth(req,res, dbcontext);
+ 
 });
-
-router.use(auth.saveUserLocal);
-
 
 module.exports = router;
