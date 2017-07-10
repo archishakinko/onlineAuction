@@ -29,8 +29,8 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveU
 
 app.use(out.typeOf);
 
-const adminService = require('./servicies/adminService');
-const userService = require('./servicies/userService');
+const adminService = require('./servicies/adminService')();
+const userService = require('./servicies/userService')();
 const authRoutes = require('./routes/auth');
 
 app.use('/auth', authRoutes);
