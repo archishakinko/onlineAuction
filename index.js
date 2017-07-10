@@ -32,10 +32,11 @@ app.use(out.typeOf);
 const adminService = require('./servicies/adminService');
 const userService = require('./servicies/userService');
 const authRoutes = require('./routes/auth');
-const apiRoutes = require('./routes/api')(adminService, userService);
 
 app.use('/auth', authRoutes);
 app.use(auth.saveUserLocal);
+
+const apiRoutes = require('./routes/api')(adminService, userService);
 app.use('/api', auth.tokenVerify, apiRoutes);
 
  dbcontext.sequelize

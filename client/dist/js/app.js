@@ -35113,6 +35113,10 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var delete_cookie = function delete_cookie(name) {
+	  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+	};
+
 	var routes = {
 	  // base component (wrapper for the whole application).
 	  component: _Base2.default,
@@ -35135,7 +35139,7 @@
 	    path: '/logout',
 	    onEnter: function onEnter(nextState, replace) {
 	      _Auth2.default.deauthenticateUser();
-
+	      delete_cookie("token");
 	      // change the current URL to /
 	      replace('/');
 	    }
@@ -43148,7 +43152,6 @@
 
 	  _createClass(Auth, null, [{
 	    key: 'authenticateUser',
-
 
 	    /**
 	     * Authenticate a user. Save a token string in Local Storage

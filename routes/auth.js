@@ -17,6 +17,7 @@ router.post('/signup', (req, res, next) => {
     });
   }
   auth.register(req, res, next, dbcontext);
+  console.log(res.locals.user);
 });
 
 router.post('/login', (req, res) => {
@@ -29,7 +30,7 @@ router.post('/login', (req, res) => {
     });
   }
   auth.auth(req,res, dbcontext);
- 
+  console.log(res.locals.user);
 });
 
 module.exports = router;

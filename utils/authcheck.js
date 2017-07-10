@@ -77,6 +77,7 @@ exports.tokenVerify = function(req, res, next){
             success: false,
             message: 'No token provided'
         });
+        console.log(res.locals.user);
     next();
 }
 
@@ -85,5 +86,6 @@ exports.isAuth = function(req,res,next){
         return res.render("error", {
             message: 'No token provided'
         });
+        console.log(res.locals.user);
     next();
 }

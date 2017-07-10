@@ -5,6 +5,9 @@ import SignUpPage from './containers/SignUpPage.jsx';
 import DashboardPage from './containers/DashboardPage.jsx';
 import Auth from './modules/Auth';
 
+var delete_cookie = function(name) {
+    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+};
 
 const routes = {
   // base component (wrapper for the whole application).
@@ -36,7 +39,7 @@ const routes = {
       path: '/logout',
       onEnter: (nextState, replace) => {
         Auth.deauthenticateUser();
-
+        delete_cookie("token");
         // change the current URL to /
         replace('/');
       }
