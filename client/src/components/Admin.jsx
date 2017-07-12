@@ -2,19 +2,19 @@ import React, { PropTypes } from 'react';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 
 
-const Dashboard = ({ secretData }) => (
+const Admin = ({ secretData }) => (
   <Card className="container">
     <CardTitle
-      title="User Main"
-      subtitle="You should get access to this page only after authentication. User page"
+      title="Admin Main"
+      subtitle="You should get access to this page only after authentication. Admin page"
     />
 
     {secretData && <CardText style={{ fontSize: '16px', color: 'green' }}>{secretData}</CardText>}
   </Card>
 );
 
-Dashboard.propTypes = {
+Admin.propTypes = {
   secretData: PropTypes.string.isRequired
 };
 
-export default Dashboard;
+export default Admin;

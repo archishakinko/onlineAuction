@@ -21,8 +21,6 @@ class LoginPage extends React.Component {
 
   processForm(event) {
     event.preventDefault();
-    console.log('email:', this.state.user.email);
-    console.log('password:', this.state.user.password);
 
     const email = encodeURIComponent(this.state.user.email);
     const password = encodeURIComponent(this.state.user.password);
@@ -38,8 +36,9 @@ class LoginPage extends React.Component {
           errors: {}
         });
         console.log('The form is valid');
-        console.log(xhr.response);
+        console.log('context: ', this.context);
         Auth.authenticateUser(xhr.response.token);
+        Auth.setRole(xhr.response.role);
         this.context.router.replace('/');
       } else {
         const errors = xhr.response.errors ? xhr.response.errors : {};

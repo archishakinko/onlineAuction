@@ -36,6 +36,14 @@ class Auth {
     return localStorage.getItem('token');
   }
 
+  static isAdmin() {
+    return localStorage.getItem('role') == 'admin';
+  }
+
+  static setRole(role) {
+    localStorage.setItem('role', role);
+  }
+
 }
 
 export default Auth;

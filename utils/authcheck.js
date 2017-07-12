@@ -14,11 +14,22 @@ exports.auth = function(req, res, dbcontext){
                 if(result){
                     var token = jwt.sign(user.get({plain: true}), 'superSecret', {expiresIn: 7200});
                     res.cookie('token', token);
-                    out.send(req, res, {
+                    if(user.role==1){
+                        out.send(req, res, {
                         success: true,
                         message: 'Enjoy your token!',
-                        token: token
-                    },200);
+                        token: token,
+                        role: 'admin'
+                        },200);
+                    }else {
+                        out.send(req, res, {
+                        success: true,
+                        message: 'Enjoy your token!',
+                        token: token,
+                        role: 'user'
+                        },200);
+                    }
+                    
                 } else {
                     out.send(req, res, {success:false,message: 'Wrong password.'}, 422);
                 }

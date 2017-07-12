@@ -3,6 +3,7 @@ import HomePage from './components/HomePage.jsx';
 import LoginPage from './containers/LoginPage.jsx';
 import SignUpPage from './containers/SignUpPage.jsx';
 import DashboardPage from './containers/DashboardPage.jsx';
+import AdminPage from './containers/AdminPage.jsx';
 import Auth from './modules/Auth';
 
 var delete_cookie = function(name) {
@@ -18,7 +19,11 @@ const routes = {
       path: '/',
       getComponent: (location, callback) => {
         if (Auth.isUserAuthenticated()) {
-          callback(null, DashboardPage);
+          if(Auth.isAdmin()){
+            callback(null, AdminPage);
+          }else{
+            callback(null, DashboardPage);
+          }
         } else {
           callback(null, HomePage);
         }
@@ -40,7 +45,6 @@ const routes = {
       onEnter: (nextState, replace) => {
         Auth.deauthenticateUser();
         delete_cookie("token");
-        // change the current URL to /
         replace('/');
       }
     }

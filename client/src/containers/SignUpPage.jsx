@@ -48,6 +48,8 @@ class SignUpPage extends React.Component {
     const password = encodeURIComponent(this.state.user.password);
     const formData = `name=${name}&surname=${surname}&phone=${phone}&email=${email}&password=${password}`;
 
+    console.log('context: ', this.context);
+
     const xhr = new XMLHttpRequest();
     xhr.open('post', '/auth/signup');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -81,5 +83,9 @@ class SignUpPage extends React.Component {
     );
   }
 }
+
+SignUpPage.contextTypes = {
+  router: PropTypes.object.isRequired
+};
 
 export default SignUpPage;
