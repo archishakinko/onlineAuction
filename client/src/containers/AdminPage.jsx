@@ -12,35 +12,67 @@ class AdminPage extends React.Component {
     super(props);
 
     this.state = {
-      secretData: ''
+      errors: {},
+      product: {
+        title: '',
+        description: '',
+        img: '',
+        startPrice: ''
+      }
     };
+
+    this.processForm = this.processForm.bind(this);
+    this.changeUser = this.changeUser.bind(this);
+
   }
 
-  /**
-   * This method will be executed after initial rendering.
-   */
-  componentDidMount() {
+  changeUser(event) {
+    const field = event.target.name;
+    const product = this.state.product;
+    product[field] = event.target.value;
+
+    this.setState({
+      product
+    });
+  }
+
+  processForm(event) {
+    event.preventDefault();
+
+    const title = encodeURIComponent(this.state.product.title);
+    const description = encodeURIComponent(this.state.product.description);
+    const img = encodeURIComponent(this.state.product.img);
+    const startPrice = encodeURIComponent(this.state.product.startPrice);
+    const formData = `title=${title}&description=${description}&img=${img}&startPrice=${startPrice}`;
+
     const xhr = new XMLHttpRequest();
-    xhr.open('get', '/api/admin');
+    xhr.open('post', '/api/admin/product');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    // set the authorization HTTP header
-    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         this.setState({
-          secretData: xhr.response.message
+          errors: {}
+        });
+        
+      } else {
+        const errors = xhr.response.errors ? xhr.response.errors : {};
+        errors.summary = xhr.response.message;
+        this.setState({
+          errors
         });
       }
     });
-    xhr.send();
+    xhr.send(formData);
   }
 
-  /**
-   * Render the component.
-   */
   render() {
-    return (<Admin secretData={this.state.secretData} />);
+    return (<Admin 
+        onSubmit={this.processForm}
+        onChange={this.changeUser}
+        errors={this.state.errors}
+        product={this.state.product}
+         />);
   }
 
 }

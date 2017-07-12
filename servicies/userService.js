@@ -4,12 +4,18 @@ const dbcontext = require('../context/db')(Sequelize, (process.env.DEV!=null)?co
 
 module.exports = ()=>{
     return {
-        addProduct: addProduct
+        getUser: getUser
     }
 
-    function addProduct (req, res){
+    function getUser (req, res){
         return new Promise((resolve, reject) => {
-           
+           dbcontext.user.findOne({
+               where:{
+                   id:res.locals.user.id
+               }
+           }).then((user)=>{
+               resolve({success:true, data: user});
+           })
         });
     
     }

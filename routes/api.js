@@ -8,7 +8,14 @@ module.exports = (adminService, userService) => {
        adminService.addProduct(req, res).then((message) => {
            out.send(req, res, message, 200)
        })
+   });
+   
+   router.get('/user/user', (req, res) => {
+       userService.getUser(req, res).then((message) => {
+           out.send(req, res, message, 200)
+       })
    }) 
+
 
    return router;
 }

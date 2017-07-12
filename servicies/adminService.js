@@ -13,7 +13,7 @@ module.exports = () => {
             title: req.body.title,
             description: req.body.description,
             img: req.body.img,
-            startPrice: req.body.price
+            startPrice: parseInt(req.body.startPrice)
         }).then((newProduct) => {
             resolve({success: true, data: newProduct});
             });

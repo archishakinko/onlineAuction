@@ -35111,6 +35111,10 @@
 
 	var _AdminPage2 = _interopRequireDefault(_AdminPage);
 
+	var _UserPage = __webpack_require__(471);
+
+	var _UserPage2 = _interopRequireDefault(_UserPage);
+
 	var _Auth = __webpack_require__(394);
 
 	var _Auth2 = _interopRequireDefault(_Auth);
@@ -35140,6 +35144,9 @@
 	  }, {
 	    path: '/login',
 	    component: _LoginPage2.default
+	  }, {
+	    path: '/user',
+	    component: _UserPage2.default
 	  }, {
 	    path: '/signup',
 	    component: _SignUpPage2.default
@@ -35201,6 +35208,11 @@
 	          _reactRouter.Link,
 	          { to: '/logout' },
 	          'Log out'
+	        ),
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/user' },
+	          'Personal info'
 	        )
 	      ) : _react2.default.createElement(
 	        'div',
@@ -43032,14 +43044,7 @@
 	    value: function processForm(event) {
 	      var _this2 = this;
 
-	      // prevent default action. in this case, action is the form submission event
 	      event.preventDefault();
-
-	      console.log('name:', this.state.user.name);
-	      console.log('surname:', this.state.user.surname);
-	      console.log('phone:', this.state.user.phone);
-	      console.log('email:', this.state.user.email);
-	      console.log('password:', this.state.user.password);
 
 	      var name = encodeURIComponent(this.state.user.name);
 	      var surname = encodeURIComponent(this.state.user.surname);
@@ -43401,45 +43406,73 @@
 	    var _this = _possibleConstructorReturn(this, (AdminPage.__proto__ || Object.getPrototypeOf(AdminPage)).call(this, props));
 
 	    _this.state = {
-	      secretData: ''
+	      errors: {},
+	      product: {
+	        title: '',
+	        description: '',
+	        img: '',
+	        startPrice: ''
+	      }
 	    };
+
+	    _this.processForm = _this.processForm.bind(_this);
+	    _this.changeUser = _this.changeUser.bind(_this);
+
 	    return _this;
 	  }
 
-	  /**
-	   * This method will be executed after initial rendering.
-	   */
-
-
 	  _createClass(AdminPage, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
+	    key: 'changeUser',
+	    value: function changeUser(event) {
+	      var field = event.target.name;
+	      var product = this.state.product;
+	      product[field] = event.target.value;
+
+	      this.setState({
+	        product: product
+	      });
+	    }
+	  }, {
+	    key: 'processForm',
+	    value: function processForm(event) {
 	      var _this2 = this;
 
+	      event.preventDefault();
+
+	      var title = encodeURIComponent(this.state.product.title);
+	      var description = encodeURIComponent(this.state.product.description);
+	      var img = encodeURIComponent(this.state.product.img);
+	      var startPrice = encodeURIComponent(this.state.product.startPrice);
+	      var formData = 'title=' + title + '&description=' + description + '&img=' + img + '&startPrice=' + startPrice;
+
 	      var xhr = new XMLHttpRequest();
-	      xhr.open('get', '/api/admin');
+	      xhr.open('post', '/api/admin/product');
 	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	      // set the authorization HTTP header
-	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
 	      xhr.responseType = 'json';
 	      xhr.addEventListener('load', function () {
 	        if (xhr.status === 200) {
 	          _this2.setState({
-	            secretData: xhr.response.message
+	            errors: {}
+	          });
+	        } else {
+	          var errors = xhr.response.errors ? xhr.response.errors : {};
+	          errors.summary = xhr.response.message;
+	          _this2.setState({
+	            errors: errors
 	          });
 	        }
 	      });
-	      xhr.send();
+	      xhr.send(formData);
 	    }
-
-	    /**
-	     * Render the component.
-	     */
-
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(_Admin2.default, { secretData: this.state.secretData });
+	      return _react2.default.createElement(_Admin2.default, {
+	        onSubmit: this.processForm,
+	        onChange: this.changeUser,
+	        errors: this.state.errors,
+	        product: this.state.product
+	      });
 	    }
 	  }]);
 
@@ -43464,10 +43497,21 @@
 
 	var _Card = __webpack_require__(396);
 
+	var _RaisedButton = __webpack_require__(454);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _TextField = __webpack_require__(456);
+
+	var _TextField2 = _interopRequireDefault(_TextField);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Admin = function Admin(_ref) {
-	  var secretData = _ref.secretData;
+	  var onSubmit = _ref.onSubmit,
+	      onChange = _ref.onChange,
+	      errors = _ref.errors,
+	      product = _ref.product;
 	  return _react2.default.createElement(
 	    _Card.Card,
 	    { className: 'container' },
@@ -43475,19 +43519,238 @@
 	      title: 'Admin Main',
 	      subtitle: 'You should get access to this page only after authentication. Admin page'
 	    }),
-	    secretData && _react2.default.createElement(
-	      _Card.CardText,
-	      { style: { fontSize: '16px', color: 'green' } },
-	      secretData
+	    _react2.default.createElement(
+	      'form',
+	      { action: '/', onSubmit: onSubmit },
+	      _react2.default.createElement(
+	        'h2',
+	        { className: 'card-heading' },
+	        'Add product'
+	      ),
+	      errors.summary && _react2.default.createElement(
+	        'p',
+	        { className: 'error-message' },
+	        errors.summary
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'field-line' },
+	        _react2.default.createElement(_TextField2.default, {
+	          floatingLabelText: 'Title',
+	          name: 'title',
+	          errorText: errors.title,
+	          onChange: onChange,
+	          value: product.title
+	        })
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'field-line' },
+	        _react2.default.createElement(_TextField2.default, {
+	          floatingLabelText: 'Description',
+	          name: 'description',
+	          errorText: errors.description,
+	          onChange: onChange,
+	          value: product.description
+	        })
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'field-line' },
+	        _react2.default.createElement(_TextField2.default, {
+	          floatingLabelText: 'Img',
+	          name: 'img',
+	          errorText: errors.img,
+	          onChange: onChange,
+	          value: product.img
+	        })
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'field-line' },
+	        _react2.default.createElement(_TextField2.default, {
+	          floatingLabelText: 'Start Price',
+	          name: 'startPrice',
+	          errorText: errors.startPrice,
+	          onChange: onChange,
+	          value: product.startPrice
+	        })
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'button-line' },
+	        _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Add Product', primary: true })
+	      )
 	    )
 	  );
 	};
 
 	Admin.propTypes = {
-	  secretData: _react.PropTypes.string.isRequired
+	  onSubmit: _react.PropTypes.func.isRequired,
+	  onChange: _react.PropTypes.func.isRequired,
+	  errors: _react.PropTypes.object.isRequired,
+	  user: _react.PropTypes.object.isRequired
 	};
 
 	exports.default = Admin;
+
+/***/ }),
+/* 471 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Auth = __webpack_require__(394);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
+	var _User = __webpack_require__(472);
+
+	var _User2 = _interopRequireDefault(_User);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var UserPage = function (_React$Component) {
+	  _inherits(UserPage, _React$Component);
+
+	  /**
+	   * Class constructor.
+	   */
+	  function UserPage(props) {
+	    _classCallCheck(this, UserPage);
+
+	    var _this = _possibleConstructorReturn(this, (UserPage.__proto__ || Object.getPrototypeOf(UserPage)).call(this, props));
+
+	    _this.state = {
+	      data: ''
+	    };
+	    return _this;
+	  }
+
+	  /**
+	   * This method will be executed after initial rendering.
+	   */
+
+
+	  _createClass(UserPage, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+
+	      var xhr = new XMLHttpRequest();
+	      xhr.open('get', '/api/user/user');
+	      console.log("data: ", xhr.response);
+	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	      // set the authorization HTTP header
+	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
+	      xhr.responseType = 'json';
+	      xhr.addEventListener('load', function () {
+	        if (xhr.status === 200) {
+	          _this2.setState({
+	            data: xhr.response.data
+	          });
+	        }
+	      });
+	      xhr.send();
+	    }
+
+	    /**
+	     * Render the component.
+	     */
+
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(_User2.default, { data: this.state.data });
+	    }
+	  }]);
+
+	  return UserPage;
+	}(_react2.default.Component);
+
+	exports.default = UserPage;
+
+/***/ }),
+/* 472 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Card = __webpack_require__(396);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var User = function User(_ref) {
+	  var data = _ref.data;
+	  return _react2.default.createElement(
+	    _Card.Card,
+	    { className: 'container' },
+	    _react2.default.createElement(_Card.CardTitle, {
+	      title: 'Personal info',
+	      subtitle: 'your personal info'
+	    }),
+	    data.name && _react2.default.createElement(
+	      _Card.CardText,
+	      { style: { fontSize: '16px', color: 'green' } },
+	      'Name: ',
+	      data.name
+	    ),
+	    data.surname && _react2.default.createElement(
+	      _Card.CardText,
+	      { style: { fontSize: '16px', color: 'green' } },
+	      'Surname: ',
+	      data.surname
+	    ),
+	    data.phone && _react2.default.createElement(
+	      _Card.CardText,
+	      { style: { fontSize: '16px', color: 'green' } },
+	      'Phone: ',
+	      data.phone
+	    ),
+	    data.email && _react2.default.createElement(
+	      _Card.CardText,
+	      { style: { fontSize: '16px', color: 'green' } },
+	      'Email: ',
+	      data.email
+	    ),
+	    data.balance && _react2.default.createElement(
+	      _Card.CardText,
+	      { style: { fontSize: '16px', color: 'green' } },
+	      'Balance: ',
+	      data.balance
+	    )
+	  );
+	};
+
+	User.propTypes = {
+	  data: _react.PropTypes.object.isRequired
+	};
+
+	exports.default = User;
 
 /***/ })
 /******/ ]);

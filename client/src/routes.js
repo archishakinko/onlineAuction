@@ -4,6 +4,7 @@ import LoginPage from './containers/LoginPage.jsx';
 import SignUpPage from './containers/SignUpPage.jsx';
 import DashboardPage from './containers/DashboardPage.jsx';
 import AdminPage from './containers/AdminPage.jsx';
+import UserPage from './containers/UserPage.jsx';
 import Auth from './modules/Auth';
 
 var delete_cookie = function(name) {
@@ -33,6 +34,11 @@ const routes = {
     {
       path: '/login',
       component: LoginPage
+    },
+
+    {
+      path: '/user',
+      component: UserPage
     },
 
     {

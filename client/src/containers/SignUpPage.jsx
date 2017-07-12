@@ -32,14 +32,7 @@ class SignUpPage extends React.Component {
   }
 
   processForm(event) {
-    // prevent default action. in this case, action is the form submission event
     event.preventDefault();
-
-    console.log('name:', this.state.user.name);
-    console.log('surname:', this.state.user.surname);
-    console.log('phone:', this.state.user.phone);
-    console.log('email:', this.state.user.email);
-    console.log('password:', this.state.user.password);
 
     const name = encodeURIComponent(this.state.user.name);
     const surname = encodeURIComponent(this.state.user.surname);
