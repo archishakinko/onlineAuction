@@ -15,8 +15,19 @@ module.exports = () => {
             img: req.body.img,
             startPrice: parseInt(req.body.startPrice)
         }).then((newProduct) => {
+            createBid(newProduct, res.locals.user.id);
             resolve({success: true, data: newProduct});
             });
         });
     };
+
+    function createBid(product, user){
+        product.addProductuser(user, {price: product.startPrice, duration: 60});
+    };
+
+    function makeBid(product, user, bid){
+        product.addProductuser(user, {price: bid, duration: 60});
+    };
+
+
 };

@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 require('body-parser-xml')(bodyParser);
 const easyxml = require('easyxml');
 const session = require('express-session');
+const jwt = require('jsonwebtoken');
 
 const out = require('./utils/out');
 const auth = require('./utils/authcheck');  
@@ -15,6 +16,12 @@ const dbcontext = require('./context/db')(Sequelize, (process.env.DEV!=null)?con
 
 
 var app = express();
+global.expressWs = require('express-ws')(app);
+expressWs.broadcast =  (data) => {
+  expressWs.getWss('/').clients.forEach(function each(client) {
+      client.send(data);
+  });
+};
 app.set('port',(process.env.PORT || 80));
 var router = express.Router();
 
@@ -28,6 +35,17 @@ app.use(bodyParser.xml({xmlParseOptions:{explicitArray: false}}));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 
 app.use(out.typeOf);
+
+app.ws('/:token',(ws, req)=>{
+    jwt.verify(req.params.token, 'superSecret', function(err, decoded){
+        if(!err){
+            ws.user = decoded;
+        } 
+    });
+    ws.on('message', function(msg){
+        //makeBid
+    })
+});
 
 const adminService = require('./servicies/adminService')();
 const userService = require('./servicies/userService')();

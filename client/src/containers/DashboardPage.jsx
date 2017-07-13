@@ -1,6 +1,7 @@
 import React from 'react';
 import Auth from '../modules/Auth';
 import Dashboard from '../components/Dashboard.jsx';
+import Websocket from 'react-websocket';
 
 
 class DashboardPage extends React.Component {
@@ -16,31 +17,34 @@ class DashboardPage extends React.Component {
     };
   }
 
+   handleData(data) {
+      let result = JSON.parse(data);
+      this.setState({secretData: this.state.secretData + result});
+      console.log("ws client: ", result);
+    }
+
   /**
    * This method will be executed after initial rendering.
    */
   componentDidMount() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('get', '/api/dashboard');
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    // set the authorization HTTP header
-    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        this.setState({
-          secretData: xhr.response.message
+      var socket = new WebSocket("ws://localhost/"+ localStorage.token);
+      var that = this;
+      socket.onmessage = function(event){
+        console.log("client data: ", event.data);
+        that.setState({
+          secretData: event.data
         });
-      }
-    });
-    xhr.send();
-  }
+      };
+  };
 
   /**
    * Render the component.
    */
   render() {
-    return (<Dashboard secretData={this.state.secretData} />);
+    return (
+    <div>
+      <Dashboard secretData={this.state.secretData} />
+    </div>);
   }
 
 }
