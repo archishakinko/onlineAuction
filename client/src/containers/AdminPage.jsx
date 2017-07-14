@@ -68,7 +68,7 @@ class AdminPage extends React.Component {
 
   render() {
     return (<Admin 
-        onSubmit={this.processForm}
+        onSubmit1={this.processForm}
         onChange={this.changeUser}
         errors={this.state.errors}
         product={this.state.product}

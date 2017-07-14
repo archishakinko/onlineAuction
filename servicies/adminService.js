@@ -24,10 +24,4 @@ module.exports = () => {
     function createBid(product, user){
         product.addProductuser(user, {price: product.startPrice, duration: 60});
     };
-
-    function makeBid(product, user, bid){
-        product.addProductuser(user, {price: bid, duration: 60});
-    };
-
-
 };

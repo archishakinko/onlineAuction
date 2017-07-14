@@ -5,10 +5,10 @@ import TextField from 'material-ui/TextField';
 
 
 const Admin = ({ 
-    onSubmit,
+    onSubmit1,
     onChange,
     errors,
-    product,
+    product
     }) => (
   <Card className="container">
     <CardTitle
@@ -16,7 +16,7 @@ const Admin = ({
       subtitle="You should get access to this page only after authentication. Admin page"
     />
 
-     <form action="/" onSubmit={onSubmit}>
+     <form action="/" onSubmit={onSubmit1}>
       <h2 className="card-heading">Add product</h2>
 
       {errors.summary && <p className="error-message">{errors.summary}</p>}
@@ -71,10 +71,10 @@ const Admin = ({
 );
 
 Admin.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  onSubmit1: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
+  product: PropTypes.object.isRequired
 };
 
 export default Admin;

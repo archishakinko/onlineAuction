@@ -13,6 +13,7 @@
     "body-parser-xml": "^1.1.0",
     "cookie-parser": "^1.4.3",
     "cookie-session": "^2.0.0-alpha.2",
+    "date-and-time": "^0.5.0",
     "easyxml": "^2.0.1",
     "express": "^4.14.0",
     "express-session": "^1.14.2",

@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const out = require('./out');
 const jwt = require('jsonwebtoken');
 const saltRounds = 10;
+const date = require('date-and-time');
 
 exports.auth = function(req, res, dbcontext){
     dbcontext.user.findOne({
@@ -97,4 +98,61 @@ exports.isAuth = function(req,res,next){
             message: 'No token provided'
         });
     next();
+}
+
+exports.getActiveBid = function (dbcontext){
+    return new Promise((resolve, reject) => {
+        dbcontext.bid.max('createdAt').then((max) => {
+            var now = new Date();
+            var last = new Date(max);
+            var lastplus = date.addSeconds(last, 55);
+            if(now>last && now< lastplus){
+                dbcontext.bid.findOne({
+                    where: {createdAt: max}
+                }).then((bid)=>{
+                   dbcontext.product.findOne({
+                    where: {
+                        id: bid.productId
+                    },
+                    include:[{
+                        all: true,
+                        nested: true,
+                        required: false
+                        }]
+                   }).then((product) => {
+                       var price1 = product.productuser[0].bid.price;
+                       resolve({success:true, data: product, price: price1 });
+                   })
+                });
+            }
+        });
+    });  
+}
+
+exports.makeBid = function (userId, productId, qprice, dbcontext){
+    return new Promise((resolve, reject) => {
+        dbcontext.user.findOne({
+            where:{
+                id:userId
+            }
+        }).then((user)=>{
+            user.addUserproduct(productId, {price: qprice, duration: 60})
+            .then((newBid) => {
+                dbcontext.product.findOne({
+                    where: {
+                        id: productId 
+                    },
+                    include:[{
+                        all: true,
+                        nested: true,
+                        required: false
+                    }]
+                }).then((product) => {
+                    console.log("product: ", product)
+                     var price1 = product.productuser[0].bid.price > product.productuser[product.productuser.length-1].bid.price ? product.productuser[0].bid.price :  product.productuser[product.productuser.length-1].bid.price;
+                       resolve({success:true, data: product, price: price1 });
+                });  
+            });
+        });
+    });
 }

@@ -36,20 +36,38 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveU
 
 app.use(out.typeOf);
 
+const adminService = require('./servicies/adminService')();
+const userService = require('./servicies/userService')();
+const authRoutes = require('./routes/auth');
+
 app.ws('/:token',(ws, req)=>{
     jwt.verify(req.params.token, 'superSecret', function(err, decoded){
         if(!err){
             ws.user = decoded;
+            auth.getActiveBid(dbcontext).then((bid) => {
+                if(bid){
+                    bid.data.dataValues.price = bid.data.dataValues.productuser[0].bid.price > bid.data.dataValues.productuser[bid.data.dataValues.productuser.length-1].bid.price ? bid.data.dataValues.productuser[0].bid.price : bid.data.dataValues.productuser[bid.data.dataValues.productuser.length-1].bid.price;
+                    ws.send(JSON.stringify(bid.data));
+                }
+            });   
         } 
     });
     ws.on('message', function(msg){
-        //makeBid
+        var val = parseInt(msg);
+        auth.getActiveBid(dbcontext).then((bid) => {
+            var price = bid.data.dataValues.productuser[0].bid.price > bid.data.dataValues.productuser[bid.data.dataValues.productuser.length-1].bid.price ? bid.data.dataValues.productuser[0].bid.price : bid.data.dataValues.productuser[bid.data.dataValues.productuser.length-1].bid.price;
+            var productId = bid.data.dataValues.productuser[0].bid.productId > bid.data.dataValues.productuser[bid.data.dataValues.productuser.length-1].bid.productId ? bid.data.dataValues.productuser[0].bid.productId : bid.data.dataValues.productuser[bid.data.dataValues.productuser.length-1].bid.productId;
+            var newPrice = parseInt(price+(price/100)*val);
+            var userId = ws.user.id;
+
+            auth.makeBid(userId, productId, newPrice, dbcontext).then((bid) => {
+                bid.data.dataValues.price = bid.price;
+                console.log("changed price: ", bid.data.dataValues.price);
+                expressWs.broadcast(JSON.stringify(bid.data));
+            })
+        });      
     })
 });
-
-const adminService = require('./servicies/adminService')();
-const userService = require('./servicies/userService')();
-const authRoutes = require('./routes/auth');
 
 app.use('/auth', authRoutes);
 app.use(auth.saveUserLocal);

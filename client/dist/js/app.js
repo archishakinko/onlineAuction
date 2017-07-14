@@ -43269,56 +43269,66 @@
 	var DashboardPage = function (_React$Component) {
 	  _inherits(DashboardPage, _React$Component);
 
-	  /**
-	   * Class constructor.
-	   */
 	  function DashboardPage(props) {
 	    _classCallCheck(this, DashboardPage);
 
 	    var _this = _possibleConstructorReturn(this, (DashboardPage.__proto__ || Object.getPrototypeOf(DashboardPage)).call(this, props));
 
+	    _this.socket = new WebSocket("ws://localhost/" + localStorage.token);
+
 	    _this.state = {
-	      secretData: ''
+	      secretData: {
+	        id: '',
+	        title: '',
+	        description: '',
+	        img: '',
+	        startPrice: '',
+	        price: ''
+	      }
 	    };
+	    _this.onClick5c = _this.onClick5c.bind(_this);
+	    _this.onClick10c = _this.onClick10c.bind(_this);
+	    _this.onClick20c = _this.onClick20c.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(DashboardPage, [{
-	    key: 'handleData',
-	    value: function handleData(data) {
-	      var result = JSON.parse(data);
-	      this.setState({ secretData: this.state.secretData + result });
-	      console.log("ws client: ", result);
+	    key: 'onClick5c',
+	    value: function onClick5c(event) {
+	      this.socket.send("5");
 	    }
-
-	    /**
-	     * This method will be executed after initial rendering.
-	     */
-
+	  }, {
+	    key: 'onClick10c',
+	    value: function onClick10c(event) {
+	      this.socket.send("10");
+	    }
+	  }, {
+	    key: 'onClick20c',
+	    value: function onClick20c(event) {
+	      this.socket.send("20");
+	    }
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var socket = new WebSocket("ws://localhost/" + localStorage.token);
 	      var that = this;
-	      socket.onmessage = function (event) {
-	        console.log("client data: ", event.data);
+	      this.socket.onmessage = function (event) {
 	        that.setState({
-	          secretData: event.data
+	          secretData: JSON.parse(event.data)
 	        });
 	      };
 	    }
 	  }, {
 	    key: 'render',
-
-
-	    /**
-	     * Render the component.
-	     */
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_Dashboard2.default, { secretData: this.state.secretData })
+	        _react2.default.createElement(_Dashboard2.default, {
+	          secretData: this.state.secretData,
+	          onClick5: this.onClick5c,
+	          onClick10: this.onClick10c,
+	          onClick20: this.onClick20c
+	        })
 	      );
 	    }
 	  }]);
@@ -43344,10 +43354,17 @@
 
 	var _Card = __webpack_require__(396);
 
+	var _RaisedButton = __webpack_require__(454);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Dashboard = function Dashboard(_ref) {
-	  var secretData = _ref.secretData;
+	  var secretData = _ref.secretData,
+	      onClick5 = _ref.onClick5,
+	      onClick10 = _ref.onClick10,
+	      onClick20 = _ref.onClick20;
 	  return _react2.default.createElement(
 	    _Card.Card,
 	    { className: 'container' },
@@ -43355,16 +43372,43 @@
 	      title: 'User Main',
 	      subtitle: 'You should get access to this page only after authentication. User page'
 	    }),
-	    secretData && _react2.default.createElement(
+	    secretData.img && _react2.default.createElement(
+	      _Card.CardMedia,
+	      { overlay: _react2.default.createElement(_Card.CardTitle, { title: secretData.title }) },
+	      _react2.default.createElement('img', { src: secretData.img })
+	    ),
+	    secretData.description && _react2.default.createElement(
 	      _Card.CardText,
 	      { style: { fontSize: '16px', color: 'green' } },
-	      secretData
+	      secretData.description
+	    ),
+	    secretData.startPrice && _react2.default.createElement(
+	      _Card.CardText,
+	      { style: { fontSize: '16px', color: 'green' } },
+	      'Start Price: ',
+	      secretData.startPrice
+	    ),
+	    secretData.price && _react2.default.createElement(
+	      _Card.CardText,
+	      { style: { fontSize: '16px', color: 'green' } },
+	      'Actual Price: ',
+	      secretData.price
+	    ),
+	    secretData.startPrice && _react2.default.createElement(
+	      'div',
+	      { className: 'button-line' },
+	      _react2.default.createElement(_RaisedButton2.default, { label: '5%', onClick: onClick5 }),
+	      _react2.default.createElement(_RaisedButton2.default, { label: '10%', onClick: onClick10, primary: true }),
+	      _react2.default.createElement(_RaisedButton2.default, { label: '20%', onClick: onClick20, secondary: true })
 	    )
 	  );
 	};
 
 	Dashboard.propTypes = {
-	  secretData: _react.PropTypes.string.isRequired
+	  secretData: _react.PropTypes.object.isRequired,
+	  onClick5: _react.PropTypes.func.isRequired,
+	  onClick10: _react.PropTypes.func.isRequired,
+	  onClick20: _react.PropTypes.func.isRequired
 	};
 
 	exports.default = Dashboard;
@@ -44669,7 +44713,7 @@
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(_Admin2.default, {
-	        onSubmit: this.processForm,
+	        onSubmit1: this.processForm,
 	        onChange: this.changeUser,
 	        errors: this.state.errors,
 	        product: this.state.product
@@ -44709,7 +44753,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Admin = function Admin(_ref) {
-	  var onSubmit = _ref.onSubmit,
+	  var onSubmit1 = _ref.onSubmit1,
 	      onChange = _ref.onChange,
 	      errors = _ref.errors,
 	      product = _ref.product;
@@ -44722,7 +44766,7 @@
 	    }),
 	    _react2.default.createElement(
 	      'form',
-	      { action: '/', onSubmit: onSubmit },
+	      { action: '/', onSubmit: onSubmit1 },
 	      _react2.default.createElement(
 	        'h2',
 	        { className: 'card-heading' },
@@ -44787,10 +44831,10 @@
 	};
 
 	Admin.propTypes = {
-	  onSubmit: _react.PropTypes.func.isRequired,
+	  onSubmit1: _react.PropTypes.func.isRequired,
 	  onChange: _react.PropTypes.func.isRequired,
 	  errors: _react.PropTypes.object.isRequired,
-	  user: _react.PropTypes.object.isRequired
+	  product: _react.PropTypes.object.isRequired
 	};
 
 	exports.default = Admin;

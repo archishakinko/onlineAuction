@@ -6,44 +6,55 @@ import Websocket from 'react-websocket';
 
 class DashboardPage extends React.Component {
 
-  /**
-   * Class constructor.
-   */
   constructor(props) {
     super(props);
+    this.socket = new WebSocket("ws://localhost/"+ localStorage.token);
 
     this.state = {
-      secretData: ''
+      secretData: {
+        id: '',
+        title: '',
+        description: '',
+        img: '',
+        startPrice: '',
+        price: ''
+      }
     };
+    this.onClick5c =  this.onClick5c.bind(this);
+    this.onClick10c = this.onClick10c.bind(this);
+    this.onClick20c = this.onClick20c.bind(this);
   }
 
-   handleData(data) {
-      let result = JSON.parse(data);
-      this.setState({secretData: this.state.secretData + result});
-      console.log("ws client: ", result);
-    }
+  onClick5c(event){
+    this.socket.send("5");
+  }
 
-  /**
-   * This method will be executed after initial rendering.
-   */
+  onClick10c(event){
+    this.socket.send("10");
+  }
+
+  onClick20c(event){
+    this.socket.send("20");
+  }
+
   componentDidMount() {
-      var socket = new WebSocket("ws://localhost/"+ localStorage.token);
       var that = this;
-      socket.onmessage = function(event){
-        console.log("client data: ", event.data);
+      this.socket.onmessage = function(event){
         that.setState({
-          secretData: event.data
+          secretData: JSON.parse(event.data)
         });
       };
   };
 
-  /**
-   * Render the component.
-   */
   render() {
     return (
     <div>
-      <Dashboard secretData={this.state.secretData} />
+      <Dashboard
+       secretData={this.state.secretData}
+       onClick5 ={this.onClick5c}
+       onClick10={this.onClick10c} 
+       onClick20={this.onClick20c}  
+       />
     </div>);
   }
 

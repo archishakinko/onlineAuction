@@ -15,8 +15,7 @@ module.exports = (adminService, userService) => {
        userService.getUser(req, res).then((message) => {
            out.send(req, res, message, 200);
        })
-   }); 
-
-
+   });
+   
    return router;
 }
