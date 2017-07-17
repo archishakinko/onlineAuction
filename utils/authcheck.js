@@ -105,7 +105,7 @@ exports.getActiveBid = function (dbcontext){
         dbcontext.bid.max('createdAt').then((max) => {
             var now = new Date();
             var last = new Date(max);
-            var lastplus = date.addSeconds(last, 55);
+            var lastplus = date.addSeconds(last, 59);
             if(now>last && now< lastplus){
                 dbcontext.bid.findOne({
                     where: {createdAt: max}
@@ -120,7 +120,7 @@ exports.getActiveBid = function (dbcontext){
                         required: false
                         }]
                    }).then((product) => {
-                       var price1 = product.productuser[0].bid.price;
+                       var price1 = product.productuser[0].bid.price > product.productuser[product.productuser.length-1].bid.price ? product.productuser[0].bid.price :  product.productuser[product.productuser.length-1].bid.price;
                        resolve({success:true, data: product, price: price1 });
                    })
                 });
@@ -148,9 +148,8 @@ exports.makeBid = function (userId, productId, qprice, dbcontext){
                         required: false
                     }]
                 }).then((product) => {
-                    console.log("product: ", product)
-                     var price1 = product.productuser[0].bid.price > product.productuser[product.productuser.length-1].bid.price ? product.productuser[0].bid.price :  product.productuser[product.productuser.length-1].bid.price;
-                       resolve({success:true, data: product, price: price1 });
+                    var price1 = product.productuser[0].bid.price > product.productuser[product.productuser.length-1].bid.price ? product.productuser[0].bid.price :  product.productuser[product.productuser.length-1].bid.price;
+                    resolve({success:true, data: product, price: price1 });
                 });  
             });
         });

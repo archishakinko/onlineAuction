@@ -35107,11 +35107,11 @@
 
 	var _DashboardPage2 = _interopRequireDefault(_DashboardPage);
 
-	var _AdminPage = __webpack_require__(470);
+	var _AdminPage = __webpack_require__(471);
 
 	var _AdminPage2 = _interopRequireDefault(_AdminPage);
 
-	var _UserPage = __webpack_require__(472);
+	var _UserPage = __webpack_require__(473);
 
 	var _UserPage2 = _interopRequireDefault(_UserPage);
 
@@ -43254,7 +43254,7 @@
 
 	var _Dashboard2 = _interopRequireDefault(_Dashboard);
 
-	var _reactWebsocket = __webpack_require__(469);
+	var _reactWebsocket = __webpack_require__(470);
 
 	var _reactWebsocket2 = _interopRequireDefault(_reactWebsocket);
 
@@ -43284,11 +43284,15 @@
 	        img: '',
 	        startPrice: '',
 	        price: ''
-	      }
+	      },
+	      timer: 0
 	    };
 	    _this.onClick5c = _this.onClick5c.bind(_this);
 	    _this.onClick10c = _this.onClick10c.bind(_this);
 	    _this.onClick20c = _this.onClick20c.bind(_this);
+
+	    _this.TimeoutFunc = _this.TimeoutFunc.bind(_this);
+	    _this.isStarted = false;
 	    return _this;
 	  }
 
@@ -43315,16 +43319,33 @@
 	        that.setState({
 	          secretData: JSON.parse(event.data)
 	        });
+	        that.setState({
+	          timer: 60
+	        });
 	      };
+	    }
+	  }, {
+	    key: 'TimeoutFunc',
+	    value: function TimeoutFunc() {
+	      var x = this;
+	      if (x.state.timer > 0) {
+	        x.setState({ timer: x.state.timer - 1 });
+	        setTimeout(x.TimeoutFunc, 1000);
+	      } else this.isStarted = false;
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      if (!this.isStarted && this.state.timer > 0) {
+	        this.isStarted = true;
+	        this.TimeoutFunc();
+	      }
 	      return _react2.default.createElement(
 	        'div',
 	        null,
 	        _react2.default.createElement(_Dashboard2.default, {
 	          secretData: this.state.secretData,
+	          timer: this.state.timer,
 	          onClick5: this.onClick5c,
 	          onClick10: this.onClick10c,
 	          onClick20: this.onClick20c
@@ -43358,10 +43379,15 @@
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
+	var _reactCountdownClock = __webpack_require__(469);
+
+	var _reactCountdownClock2 = _interopRequireDefault(_reactCountdownClock);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Dashboard = function Dashboard(_ref) {
 	  var secretData = _ref.secretData,
+	      timer = _ref.timer,
 	      onClick5 = _ref.onClick5,
 	      onClick10 = _ref.onClick10,
 	      onClick20 = _ref.onClick20;
@@ -43395,6 +43421,12 @@
 	      secretData.price
 	    ),
 	    secretData.startPrice && _react2.default.createElement(
+	      _Card.CardText,
+	      { style: { fontSize: '16px', color: 'green' } },
+	      'Time Left: ',
+	      timer
+	    ),
+	    secretData.startPrice && _react2.default.createElement(
 	      'div',
 	      { className: 'button-line' },
 	      _react2.default.createElement(_RaisedButton2.default, { label: '5%', onClick: onClick5 }),
@@ -43406,6 +43438,7 @@
 
 	Dashboard.propTypes = {
 	  secretData: _react.PropTypes.object.isRequired,
+	  timer: _react.PropTypes.number.isRequired,
 	  onClick5: _react.PropTypes.func.isRequired,
 	  onClick10: _react.PropTypes.func.isRequired,
 	  onClick20: _react.PropTypes.func.isRequired
@@ -43415,6 +43448,13 @@
 
 /***/ }),
 /* 469 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	!function(t,s){ true?module.exports=s(__webpack_require__(1)):"function"==typeof define&&define.amd?define(["react"],s):"object"==typeof exports?exports.ReactCountdownClock=s(require("react")):t.ReactCountdownClock=s(t.React)}(this,function(t){return function(t){function s(i){if(e[i])return e[i].exports;var r=e[i]={exports:{},id:i,loaded:!1};return t[i].call(r.exports,r,r.exports,s),r.loaded=!0,r.exports}var e={};return s.m=t,s.c=e,s.p="/build/",s(0)}([function(t,s,e){var i;i=e(1),t.exports=i.createClass({_seconds:0,_radius:null,_fraction:null,_content:null,_canvas:null,_timeoutIds:[],displayName:"ReactCountdownClock",propTypes:{seconds:i.PropTypes.number,size:i.PropTypes.number,weight:i.PropTypes.number,color:i.PropTypes.string,fontSize:i.PropTypes.string,font:i.PropTypes.string,alpha:i.PropTypes.number,timeFormat:i.PropTypes.string,onComplete:i.PropTypes.func,onClick:i.PropTypes.func,showMilliseconds:i.PropTypes.bool,paused:i.PropTypes.bool,pausedText:i.PropTypes.string},getDefaultProps:function(){return{seconds:60,size:300,color:"#000",alpha:1,timeFormat:"hms",fontSize:"auto",font:"Arial",showMilliseconds:!0,paused:!1}},componentDidUpdate:function(t){if(t.seconds!==this.props.seconds&&(this._seconds=t.seconds,this._setupTimer()),t.color!==this.props.color&&(this._clearBackground(),this._drawBackground(),this._updateCanvas()),t.paused!==this.props.paused&&(this.props.paused||this._startTimer(),this.props.paused))return this._pauseTimer()},componentDidMount:function(){return this._seconds=this.props.seconds,this._setupTimer()},componentWillUnmount:function(){return this._cancelTimer()},_setupTimer:function(){if(this._setScale(),this._setupCanvases(),this._drawBackground(),this._drawTimer(),!this.props.paused)return this._startTimer()},_updateCanvas:function(){return this._clearTimer(),this._drawTimer()},_setScale:function(){return this._radius=this.props.size/2,this._fraction=2/this._seconds,this._tickPeriod=this._calculateTick(),this._innerRadius=this.props.weight?this._radius-this.props.weight:this._radius/1.8},_calculateTick:function(){var t,s;return s=1.8,t=this._seconds*s,t>1e3?1e3:t},_setupCanvases:function(){if(this._background=this.refs.background.getContext("2d"),this._timer=this.refs.timer.getContext("2d"),this._timer.textAlign="center",this._timer.textBaseline="middle",null!=this.props.onClick)return this.refs.component.addEventListener("click",this.props.onClick)},_startTimer:function(){return this._timeoutIds.push(setTimeout(function(t){return function(){return t._tick()}}(this),200))},_pauseTimer:function(){return this._stopTimer(),this._updateCanvas()},_stopTimer:function(){var t,s,e,i,r;for(e=this._timeoutIds,i=[],t=0,s=e.length;t<s;t++)r=e[t],i.push(clearTimeout(r));return i},_cancelTimer:function(){if(this._stopTimer(),null!=this.props.onClick)return this.refs.component.removeEventListener("click",this.props.onClick)},_tick:function(){var t;return t=Date.now(),this._timeoutIds.push(setTimeout(function(s){return function(){var e;return e=(Date.now()-t)/1e3,s._seconds-=e,s._seconds<=0?(s._seconds=0,s._handleComplete(),s._clearTimer()):(s._updateCanvas(),s._tick())}}(this),this._tickPeriod))},_handleComplete:function(){if(this.props.onComplete)return this.props.onComplete()},_clearBackground:function(){return this._background.clearRect(0,0,this.refs.timer.width,this.refs.timer.height)},_clearTimer:function(){return this._timer.clearRect(0,0,this.refs.timer.width,this.refs.timer.height)},_drawBackground:function(){return this._background.beginPath(),this._background.globalAlpha=this.props.alpha/3,this._background.fillStyle=this.props.color,this._background.arc(this._radius,this._radius,this._radius,0,2*Math.PI,!1),this._background.arc(this._radius,this._radius,this._innerRadius,2*Math.PI,0,!0),this._background.closePath(),this._background.fill()},_formattedTime:function(){var t,s,e,i,r,o;return t=null!=(i=this._seconds<=9.9&&this.props.showMilliseconds)?i:{1:0},"hms"===this.props.timeFormat?(s=parseInt(this._seconds/3600)%24,e=parseInt(this._seconds/60)%60,r=(this._seconds%60).toFixed(t),s<10&&(s="0"+s),e<10&&(e="0"+e),r<10&&e>=1&&(r="0"+r),o=[],s>0&&o.push(s),e>0&&o.push(e),o.push(r),o.join(":")):this._seconds.toFixed(t)},_fontSize:function(t){var s,e;return"auto"===this.props.fontSize?(s=function(){switch(t.length){case 8:return 4;case 5:return 3;default:return 2}}(),e=this._radius/s,e+"px"):this.props.fontSize},_drawTimer:function(){var t,s,e;return s=this._fraction*this._seconds+1.5,t=this._formattedTime(),e=this.props.paused&&null!=this.props.pausedText?this.props.pausedText:t,this._timer.globalAlpha=this.props.alpha,this._timer.fillStyle=this.props.color,this._timer.font="bold "+this._fontSize(t)+" "+this.props.font,this._timer.fillText(e,this._radius,this._radius),this._timer.beginPath(),this._timer.arc(this._radius,this._radius,this._radius,1.5*Math.PI,Math.PI*s,!1),this._timer.arc(this._radius,this._radius,this._innerRadius,Math.PI*s,1.5*Math.PI,!0),this._timer.closePath(),this._timer.fill()},render:function(){return i.createElement("div",{ref:"component",className:"react-countdown-clock"},i.createElement("canvas",{ref:"background",style:{position:"absolute"},width:this.props.size,height:this.props.size}),i.createElement("canvas",{ref:"timer",style:{position:"absolute"},width:this.props.size,height:this.props.size}))}})},function(s,e){s.exports=t}])});
+	//# sourceMappingURL=react-countdown-clock.js.map
+
+/***/ }),
+/* 470 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	(function webpackUniversalModuleDefinition(root, factory) {
@@ -44608,7 +44648,7 @@
 	//# sourceMappingURL=index.map
 
 /***/ }),
-/* 470 */
+/* 471 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44627,7 +44667,7 @@
 
 	var _Auth2 = _interopRequireDefault(_Auth);
 
-	var _Admin = __webpack_require__(471);
+	var _Admin = __webpack_require__(472);
 
 	var _Admin2 = _interopRequireDefault(_Admin);
 
@@ -44642,9 +44682,6 @@
 	var AdminPage = function (_React$Component) {
 	  _inherits(AdminPage, _React$Component);
 
-	  /**
-	   * Class constructor.
-	   */
 	  function AdminPage(props) {
 	    _classCallCheck(this, AdminPage);
 
@@ -44662,7 +44699,6 @@
 
 	    _this.processForm = _this.processForm.bind(_this);
 	    _this.changeUser = _this.changeUser.bind(_this);
-
 	    return _this;
 	  }
 
@@ -44727,7 +44763,7 @@
 	exports.default = AdminPage;
 
 /***/ }),
-/* 471 */
+/* 472 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44840,7 +44876,7 @@
 	exports.default = Admin;
 
 /***/ }),
-/* 472 */
+/* 473 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44859,7 +44895,7 @@
 
 	var _Auth2 = _interopRequireDefault(_Auth);
 
-	var _User = __webpack_require__(473);
+	var _User = __webpack_require__(474);
 
 	var _User2 = _interopRequireDefault(_User);
 
@@ -44932,7 +44968,7 @@
 	exports.default = UserPage;
 
 /***/ }),
-/* 473 */
+/* 474 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';

@@ -5,9 +5,6 @@ import Admin from '../components/Admin.jsx';
 
 class AdminPage extends React.Component {
 
-  /**
-   * Class constructor.
-   */
   constructor(props) {
     super(props);
 
@@ -23,7 +20,6 @@ class AdminPage extends React.Component {
 
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
-
   }
 
   changeUser(event) {
@@ -53,8 +49,7 @@ class AdminPage extends React.Component {
       if (xhr.status === 200) {
         this.setState({
           errors: {}
-        });
-        
+        });  
       } else {
         const errors = xhr.response.errors ? xhr.response.errors : {};
         errors.summary = xhr.response.message;

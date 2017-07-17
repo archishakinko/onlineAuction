@@ -17,12 +17,16 @@ class DashboardPage extends React.Component {
         description: '',
         img: '',
         startPrice: '',
-        price: ''
-      }
+        price: '',
+      },
+      timer: 0
     };
     this.onClick5c =  this.onClick5c.bind(this);
     this.onClick10c = this.onClick10c.bind(this);
     this.onClick20c = this.onClick20c.bind(this);
+
+    this.TimeoutFunc = this.TimeoutFunc.bind(this);
+    this.isStarted = false;
   }
 
   onClick5c(event){
@@ -43,17 +47,34 @@ class DashboardPage extends React.Component {
         that.setState({
           secretData: JSON.parse(event.data)
         });
+        that.setState({
+          timer: 60
+        });
       };
   };
 
+  TimeoutFunc(){
+    var x = this;
+    if(x.state.timer > 0) {
+      x.setState({timer: x.state.timer - 1 });
+      setTimeout(x.TimeoutFunc, 1000);
+    }
+    else this.isStarted = false;
+  }
+
   render() {
+    if(!this.isStarted && this.state.timer > 0) {
+      this.isStarted = true;
+      this.TimeoutFunc();
+    }
     return (
     <div>
       <Dashboard
        secretData={this.state.secretData}
-       onClick5 ={this.onClick5c}
-       onClick10={this.onClick10c} 
-       onClick20={this.onClick20c}  
+       timer     ={this.state.timer}
+       onClick5  ={this.onClick5c}
+       onClick10 ={this.onClick10c} 
+       onClick20 ={this.onClick20c}  
        />
     </div>);
   }
