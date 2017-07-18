@@ -74,7 +74,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// remove tap delay, essential for MaterialUI to work properly
 	(0, _reactTapEventPlugin2.default)();
 
 	_reactDom2.default.render(_react2.default.createElement(
@@ -40779,8 +40778,6 @@
 	          _this2.setState({
 	            errors: {}
 	          });
-	          console.log('The form is valid');
-	          console.log('context: ', _this2.context);
 	          _Auth2.default.authenticateUser(xhr.response.token);
 	          _Auth2.default.setRole(xhr.response.role);
 	          _this2.context.router.replace('/');
@@ -43053,8 +43050,6 @@
 	      var password = encodeURIComponent(this.state.user.password);
 	      var formData = 'name=' + name + '&surname=' + surname + '&phone=' + phone + '&email=' + email + '&password=' + password;
 
-	      console.log('context: ', this.context);
-
 	      var xhr = new XMLHttpRequest();
 	      xhr.open('post', '/auth/signup');
 	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -43064,7 +43059,6 @@
 	          _this2.setState({
 	            errors: {}
 	          });
-	          console.log('The form is valid');
 	          _this2.context.router.replace('/login');
 	        } else {
 	          var errors = xhr.response.errors ? xhr.response.errors : {};
@@ -44910,9 +44904,6 @@
 	var UserPage = function (_React$Component) {
 	  _inherits(UserPage, _React$Component);
 
-	  /**
-	   * Class constructor.
-	   */
 	  function UserPage(props) {
 	    _classCallCheck(this, UserPage);
 
@@ -44924,11 +44915,6 @@
 	    return _this;
 	  }
 
-	  /**
-	   * This method will be executed after initial rendering.
-	   */
-
-
 	  _createClass(UserPage, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
@@ -44936,9 +44922,7 @@
 
 	      var xhr = new XMLHttpRequest();
 	      xhr.open('get', '/api/user/user');
-	      console.log("data: ", xhr.response);
 	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	      // set the authorization HTTP header
 	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
 	      xhr.responseType = 'json';
 	      xhr.addEventListener('load', function () {
@@ -44950,11 +44934,6 @@
 	      });
 	      xhr.send();
 	    }
-
-	    /**
-	     * Render the component.
-	     */
-
 	  }, {
 	    key: 'render',
 	    value: function render() {

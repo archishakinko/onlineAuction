@@ -62,7 +62,6 @@ app.ws('/:token',(ws, req)=>{
 
             auth.makeBid(userId, productId, newPrice, dbcontext).then((bid) => {
                 bid.data.dataValues.price = bid.price;
-                console.log("changed price: ", bid.data.dataValues.price);
                 expressWs.broadcast(JSON.stringify(bid.data));
             })
         });      

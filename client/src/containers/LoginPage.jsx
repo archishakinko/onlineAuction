@@ -35,8 +35,6 @@ class LoginPage extends React.Component {
         this.setState({
           errors: {}
         });
-        console.log('The form is valid');
-        console.log('context: ', this.context);
         Auth.authenticateUser(xhr.response.token);
         Auth.setRole(xhr.response.role);
         this.context.router.replace('/');

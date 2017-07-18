@@ -19,14 +19,12 @@ module.exports = (Sequelize, config) => {
     const Product = require('../models/product')(Sequelize, sequelize);
     const Bid = require('../models/bid')(Sequelize, sequelize);
     const Winner = require('../models/winner')(Sequelize, sequelize);
-   
 
     User.belongsToMany(Product, {as: 'userproduct', through: Bid, timestamps: true, foreignKey: 'userId'});
     Product.belongsToMany(User, {as: 'productuser', through: Bid, timestamps: true, foreignKey: 'productId'});
 
     User.belongsToMany(Product, {as: 'userwinner', through: Winner, timestamps: true, foreignKey: 'userId'});
     Product.belongsToMany(User, {as: 'productwinner', through: Winner, timestamps: true, foreignKey: 'productId'});
-
 
      return {
         user: User,

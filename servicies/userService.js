@@ -15,9 +15,8 @@ module.exports = ()=>{
                }
            }).then((user)=>{
                resolve({success:true, data: user});
-           })
+           });
         });
-    
     };
 };
    

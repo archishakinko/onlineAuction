@@ -3,6 +3,7 @@ const out = require('./out');
 const jwt = require('jsonwebtoken');
 const saltRounds = 10;
 const date = require('date-and-time');
+var x;  
 
 exports.auth = function(req, res, dbcontext){
     dbcontext.user.findOne({
@@ -29,8 +30,7 @@ exports.auth = function(req, res, dbcontext){
                         token: token,
                         role: 'user'
                         },200);
-                    }
-                    
+                    }   
                 } else {
                     out.send(req, res, {success:false,message: 'Wrong password.'}, 422);
                 }
@@ -150,8 +150,40 @@ exports.makeBid = function (userId, productId, qprice, dbcontext){
                 }).then((product) => {
                     var price1 = product.productuser[0].bid.price > product.productuser[product.productuser.length-1].bid.price ? product.productuser[0].bid.price :  product.productuser[product.productuser.length-1].bid.price;
                     resolve({success:true, data: product, price: price1 });
+                    TimeoutFunc(productId, userId, dbcontext, 60);
                 });  
             });
         });
     });
 }
+
+function getWinner(product, user, dbcontext){
+    dbcontext.user.findOne({
+        where:{
+            id: user
+        }
+    }).then((newUser) => {
+        newUser.addUserwinner(product);
+    });
+}
+
+function TimeoutFunc(product, user, dbcontext, timer){
+    if(!x){
+        x = setInterval(function(){
+        timer = timer -1;
+        if(timer == 0){
+            clearInterval(x);
+            getWinner(product, user, dbcontext);
+            }
+        }, 1000);
+    } else {
+        clearInterval(x);
+        x = setInterval(function(){
+            timer = timer -1;
+            if(timer == 0){
+                clearInterval(x);
+                getWinner(product, user, dbcontext);
+            }
+        }, 1000);
+    }    
+  }

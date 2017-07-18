@@ -5,9 +5,6 @@ import User from '../components/User.jsx';
 
 class UserPage extends React.Component {
 
-  /**
-   * Class constructor.
-   */
   constructor(props) {
     super(props);
 
@@ -16,15 +13,10 @@ class UserPage extends React.Component {
     };
   }
 
-  /**
-   * This method will be executed after initial rendering.
-   */
   componentDidMount() {
     const xhr = new XMLHttpRequest();
     xhr.open('get', '/api/user/user');
-    console.log("data: ", xhr.response);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    // set the authorization HTTP header
     xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
@@ -37,9 +29,6 @@ class UserPage extends React.Component {
     xhr.send();
   }
 
-  /**
-   * Render the component.
-   */
   render() {
     return (<User data={this.state.data} />);
   }
