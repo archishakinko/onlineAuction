@@ -8,7 +8,7 @@ class DashboardPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.socket = new WebSocket("ws://localhost/"+ localStorage.token);
+    this.socket = new WebSocket("ws://easygit228.herokuapp.com/"+ localStorage.token);
 
     this.state = {
       secretData: {
