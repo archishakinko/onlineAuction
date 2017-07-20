@@ -43268,7 +43268,7 @@
 
 	    var _this = _possibleConstructorReturn(this, (DashboardPage.__proto__ || Object.getPrototypeOf(DashboardPage)).call(this, props));
 
-	    _this.socket = new WebSocket("ws://easygit228.herokuapp.com/" + localStorage.token);
+	    _this.socket = new WebSocket("wss://easygit228.herokuapp.com/" + localStorage.token);
 
 	    _this.state = {
 	      secretData: {
