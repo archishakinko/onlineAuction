@@ -25,6 +25,7 @@ expressWs.broadcast =  (data) => {
 app.set('port',(process.env.PORT || 80));
 var router = express.Router();
 
+
 app.use(express.static('./public/'));
 app.use(express.static('./client/dist/'));
 app.use(require('body-parser').urlencoded({ extended: true }));
